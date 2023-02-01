@@ -1,0 +1,7 @@
+excludedDomains:
+- name: youtube
+  pattern: 'https://[[a-zA-Z0-9]+\.]?(youtube)\.com(?:/.*)?'
+- name: ebay
+  pattern: 'https://[[a-zA-Z0-9]+\.]?(ebay)\.(com|de|fr)(?:/.*)?'
+- name: amazon
+  pattern: 'https://[[a-zA-Z0-9]+\.]?(amazon)\.(com|de|fr)(?:/.*)?'

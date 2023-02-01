@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  wallabagsync:
+    image: linkdingsync/wallabag:latest
+    volumes:
+      - ./config.yml:/data/config.yml
+    # env_file:
+    #   - .env
+    environment:
+      - Worker__Intervall=0
+      - Worker__SyncTag=<tagName>
+      - Linkding__Url=https://<url>
+      - Linkding__Key=<secret>
+      - Wallabag__Url=https://<url>
+      - Wallabag__Username=<username>
+      - Wallabag__Password=<password>
+      - Wallabag__ClientId=<clientId>
+      - Wallabag__ClientSecret=<secret>

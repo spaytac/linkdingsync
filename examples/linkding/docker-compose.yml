@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  linkdingupdater:
+    image: linkdingsync/linkdingupdater:latest
+    volumes:
+      - ./config.yml:/data/config.yml
+    # env_file:
+    #   - .env
+    environment:
+      - Worker__Intervall=0
+      - Linkding__Url=https://<url>
+      - Linkding__Key=<secret>
