@@ -2,9 +2,9 @@ version: '3.9'
 
 services:
   wallabagsync:
-    image: linkdingsync/wallabag:latest
+    image: ghcr.io/spaytac/wallabag-sync:latest
     volumes:
-      - ./config.yml:/data/config.yml
+      - ./config.yml:/app/data/config.yml
     # env_file:
     #   - .env
     environment:

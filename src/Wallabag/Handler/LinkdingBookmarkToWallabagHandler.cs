@@ -26,6 +26,9 @@ namespace Wallabag.Handler
             {
                 var settings = SettingsService.Settings;
 
+                // var settingsString = JsonSerializer.Serialize(settings);
+                // logger.LogInformation($"settings: {settingsString}");
+
                 var tagName = configuration.GetValue<string>("Worker:SyncTag");
 
                 linkdingBookmarks =
