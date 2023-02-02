@@ -23,11 +23,12 @@ jobs:
               username: ${{github.actor}}
               password: ${{secrets.GITHUB_TOKEN}}
 
-          - name: 'Build Inventory Image'
+          - name: 'Build WallabagSync Image'
             run: |
               docker build -f ./Dockerfile_Wallabag --tag ghcr.io/spaytac/wallabag-sync:latest .
               docker push ghcr.io/spaytac/wallabag-sync:latest
-          - name: 'Build Inventory Image'
+              
+          - name: 'Build LinkdingUpdater Image'
             run: |
               docker build -f ./Dockerfile_Linkding --tag ghcr.io/spaytac/linkding-updater:latest .
               docker push ghcr.io/spaytac/linkding-updater:latest
