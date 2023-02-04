@@ -42,11 +42,11 @@ public class Worker : BackgroundService
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
             await RunSyncWallabag();
-            int delay = _settings.Intervall * 60000;
+            int delay = _settings.Interval * 60000;
 
             if (delay > 0)
             {
-                _logger.LogInformation($"Worker paused for: {_settings.Intervall} minutes");
+                _logger.LogInformation($"Worker paused for: {_settings.Interval} minutes");
 
                 await Task.Delay(delay, stoppingToken);
             }

@@ -14,7 +14,7 @@ Environment variables for the wallabag worker.
 
 | Variable               | Value     | Description                                                                                                  | Attention                                                                                                                                                     |
 |------------------------|-----------|--------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Worker__Intervall      | int (>=0) | This value sets the execution schedule in minutes. 1 = every minute, 10 = every 10 minutes (default value 0) | 0 = runs only one time. The container will be stopped after the execution. This method is the preferred way to run the container with a scheduler (e.g. cron) |
+| Worker__Interval      | int (>=0) | This value sets the execution schedule in minutes. 1 = every minute, 10 = every 10 minutes (default value 0) | 0 = runs only one time. The container will be stopped after the execution. This method is the preferred way to run the container with a scheduler (e.g. cron) |
 | Worker__SyncTag        | text      | The linkding tag to create the bookmarks in Wallabag. (default value 'readlater')                            |                                                                                                                                                               |
 | Linkding__Url          | text      | URL to the linkding instance                                                                                 |                                                                                                                                                               |
 | Linkding__Key          | text      | The linkding application key                                                                                 | [Instructions](https://github.com/sissbruecker/linkding/blob/master/docs/API.md)                                                                              |
@@ -27,12 +27,45 @@ Environment variables for the wallabag worker.
 ### LinkdingUpdater
 Environment variables for the linkding worker.
 
-| Variable               | Value     | Description                                                                                | Attention                                                                                                                                                     |
-|------------------------|-----------|--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Worker__Intervall      | int (>=0) | This value sets the execution schedule in minutes. 1 = every minute, 10 = every 10 minutes | 0 = runs only one time. The container will be stopped after the execution. This method is the preferred way to run the container with a scheduler (e.g. cron) |
-| Worker__SyncTag        | text      | The linkding tag to create the bookmarks in Wallabag.                                      |                                                                                                                                                               |
-| Linkding__Url          | text      | URL to the linkding instance                                                               |                                                                                                                                                               |
-| Linkding__Key          | text      | The linkding application key                                                               | [Instructions](https://github.com/sissbruecker/linkding/blob/master/docs/API.md)                                                                              |
+| Variable                      | Value     | Description                                                                                | Attention                                                                                                                                                     |
+|-------------------------------|-----------|--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Worker__Interval              | int (>=0) | This value sets the execution schedule in minutes. 1 = every minute, 10 = every 10 minutes | 0 = runs only one time. The container will be stopped after the execution. This method is the preferred way to run the container with a scheduler (e.g. cron) |
+| Worker__Worker__TagNameLength | int       | The max tag name length. Default is 64 characters                                          |                                                                                                                                                               |
+| Worker__Tasks__X              | text      | The tasks which should be executed. X is the array index for the tasks entry               | currently supported tasks: AddPopularSitesAsTag,AddYearToBookmark.                                                                       |
+| Linkding__Url                 | text      | URL to the linkding instance                                                               |                                                                                                                                                               |
+| Linkding__Key                 | text      | The linkding application key                                                               | [Instructions](https://github.com/sissbruecker/linkding/blob/master/docs/API.md)                                                                              |
+
+#### Tasks
+Tasks define the logic that directly make changes to the bookmarks.
+Currently available tasks:
+
+| Name                  | Description                                                                                                                        |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| AddYearToBookmark     | If the bookmark does not have the year of the creation date as a tag, it will be added.                                            |
+| AddPopularSitesAsTag  | This is the task for dynamic creation of tags. For this task to work, the rules must be passed to the container as configuration.  |
+
+The tasks are defined as environment variables, if no tasks are defined, the container will be executed but no changes will be made.
+The tasks are passed as follows:
+```yaml
+version: '3.9'
+
+services:
+  linkdingupdater:
+    image: ghcr.io/spaytac/linkding-updater:latest
+    volumes:
+      - ./config.yml:/app/data/config.yml
+    # env_file:
+    #   - .env
+    environment:
+      - Worker__Interval=0
+      - Worker__TagNameLength=64
+      - Worker__Tasks__0=AddPopularSitesAsTag
+      - Worker__Tasks__1=AddYearToBookmark
+      - Linkding__Url=https://<url>
+      - Linkding__Key=<secret>
+
+
+```
 
 ## Configuration
 The following explains the configuration options. The Configuration file must be mapped to **/app/data/config.yml**

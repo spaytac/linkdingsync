@@ -8,6 +8,9 @@ services:
     # env_file:
     #   - .env
     environment:
-      - Worker__Intervall=0
+      - Worker__Interval=0
+      - Worker__TagNameLength=64
+      - Worker__Tasks__0=AddPopularSitesAsTag
+      - Worker__Tasks__1=AddYearToBookmark
       - Linkding__Url=https://<url>
       - Linkding__Key=<secret>

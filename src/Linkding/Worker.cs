@@ -34,24 +34,24 @@ public class Worker : BackgroundService
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-            await RunTaskHandler();
-            int delay = _settings.Intervall * 60000;
+            await RunBookmarksTaskHandler();
+            int delay = _settings.Interval * 60000;
 
             if (delay > 0)
             {
-                _logger.LogInformation($"Worker paused for: {_settings.Intervall} minutes");
+                _logger.LogInformation($"Worker paused for: {_settings.Interval} minutes");
 
                 await Task.Delay(delay, stoppingToken);
             }
             else
             {
-                _logger.LogInformation($"Intervall value is '0' --> stopping worker");
+                _logger.LogInformation($"Interval value is '0' --> stopping worker");
                 _hostApplicationLifetime.StopApplication();
             }
         }
     }
     
-    public async Task RunTaskHandler()
+    public async Task RunBookmarksTaskHandler()
     {
         if (!string.IsNullOrEmpty(_linkdingSettings.Url) && _linkdingSettings.UpdateBookmarks)
         {
@@ -70,6 +70,7 @@ public class Worker : BackgroundService
                 var linkdingBookmarks = await _linkdingService.GetAllBookmarksAsync();
                 if (linkdingBookmarks.Count() > 0)
                 {
+                    var tasksLowerCase = _settings.Tasks.Select(x => x.ToLower());
 
                     _logger.LogInformation($"{linkdingBookmarks.Count()} bookmarks found in {_linkdingSettings.Url}");
 
@@ -79,6 +80,14 @@ public class Worker : BackgroundService
                         try
                         {
                             handlerInstance = (ILinkdingTaskHandler) Activator.CreateInstance(handler);
+
+                            var task = tasksLowerCase.FirstOrDefault(x =>
+                                x.Equals(handlerInstance.Command, StringComparison.InvariantCultureIgnoreCase));
+
+                            if (string.IsNullOrEmpty(task))
+                            {
+                                continue;
+                            }
 
                             foreach (var linkdingBookmark in linkdingBookmarks)
                             {

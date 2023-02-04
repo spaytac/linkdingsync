@@ -10,8 +10,6 @@ namespace Linkding.Handler;
 
 public class AddPopularSitesAsTagHandler : ILinkdingTaskHandler
 {
-    private record RegexExpressionGroups(string Expression, string Replace);
-
     public string Command { get; } = "AddPopularSitesAsTag";
     public async Task<HandlerResult> ProcessAsync(Bookmark bookmark, ILogger logger, IConfiguration configuration)
     {
@@ -34,11 +32,12 @@ public class AddPopularSitesAsTagHandler : ILinkdingTaskHandler
                         var tags = tagsCommaSeparated.Split(',');
                         foreach (var tag in tags)
                         {
-                            if (!string.IsNullOrEmpty(tag) && !returnValue.Instance.TagNames.Contains(tag) &&
-                                returnValue.Instance.TagNames.FirstOrDefault(x => x.ToLower() == tag.ToLower()) == null)
+                            var normalizeTag = tag.NormalizeTag();
+                            if (!string.IsNullOrEmpty(normalizeTag) && !returnValue.Instance.TagNames.Contains(normalizeTag) &&
+                                returnValue.Instance.TagNames.FirstOrDefault(x => x.ToLower() == normalizeTag.ToLower()) == null)
                             {
                                 
-                                returnValue.Instance.TagNames = returnValue.Instance.TagNames.Add(tag);
+                                returnValue.Instance.TagNames = returnValue.Instance.TagNames.Add(normalizeTag);
                                 returnValue.PerformAction = true;
                                 returnValue.Action = LinkdingItemAction.Update;
                             }

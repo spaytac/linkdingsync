@@ -32,8 +32,8 @@ taggingRule:
     pattern: https://[[a-zA-Z0-9]+\.]?(xbox)\.com(?:/.*)?
     replace: $1
   - name: github
-    pattern: https://([a-zA-Z0-9]+)?[\.]?(github)\.com[/]?([a-zA-Z0-9\-\+_]+)(?:/)?([a-zA-Z0-9\-\+_]+)?(?:/.*)?
-    replace: $1,$2,$3,$4
+    pattern: https://([ a-zA-Z0-9 ]+)?[ \. ]?(github)\.com[ / ]?([ a-zA-Z0-9\-\+_ ]+)(?:/)?([ a-zA-Z0-9\-\+_ ]+)?(?:/.*)?
+    replace: $2,$3,$4
   - name: github.io
-    pattern: https://([a-zA-Z0-9]+)\.(github)\.io[/]?([a-zA-Z0-9\-\+_]+)(?:/)?([a-zA-Z0-9\-\+_]+)?(?:/.*)?
+    pattern: https://([ a-zA-Z0-9 ]+)\.(github)\.io[ / ]?([ a-zA-Z0-9\-\+_ ]+)(?:/)?([ a-zA-Z0-9\-\+_ ]+)?(?:/.*)?
     replace: $1,$2,$3
