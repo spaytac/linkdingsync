@@ -60,7 +60,7 @@ namespace Wallabag.Handler
                             }
                         }
 
-                        if (addToWallabag && !updatedWallabags.ContainsKey(bookmark.Url))
+                        if (addToWallabag && !updatedWallabags.ContainsKey(cleanUrl))
                         {
                             updatedWallabags.Add(cleanUrl,
                                 bookmark.TagNames.Where(x => !x.Equals(tagName, StringComparison.OrdinalIgnoreCase)));
