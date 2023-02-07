@@ -7,6 +7,14 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.Add_Linkding_HttpClient(ctx.Configuration);
         services.Add_Wallabag_Worker(ctx.Configuration);
         services.AddHostedService<Worker>();
+    }).ConfigureHostConfiguration((builder) =>
+    {
+        builder
+            .AddEnvironmentVariables()
+            .AddCommandLine(args)
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile("appsettings.Development.json")
+            .AddUserSecrets<Program>(true);
     })
     .Build();
 

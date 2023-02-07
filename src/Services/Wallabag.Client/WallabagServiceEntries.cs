@@ -26,7 +26,11 @@ public partial class WallabagService
                 while (allQuery.QueryLinks.Next != null && !string.IsNullOrEmpty(allQuery.QueryLinks.Next.Href))
                 {
                     // url = allQuery.QueryLinks.Next.Href.Replace(_settings.Url, "");
-                    url = allQuery.QueryLinks.Next.Href.Replace("http://", "https://");
+                    if (_client.BaseAddress.Scheme == "https")
+                    {
+                        url = allQuery.QueryLinks.Next.Href.Replace("http://", "https://");
+                    }
+
                     allQuery = await GetJsonAsync<WallabagQuery>(url);
                     bookmarks.AddRange(allQuery.Embedded.Items);
                 }
