@@ -11,10 +11,12 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         builder
             .AddEnvironmentVariables()
-            .AddCommandLine(args)
+#if DEBUG
             .AddJsonFile("appsettings.json")
             .AddJsonFile("appsettings.Development.json")
-            .AddUserSecrets<Program>(true);
+#endif
+            .AddUserSecrets<Program>(true)
+            .AddCommandLine(args);
     })
     .Build();
 

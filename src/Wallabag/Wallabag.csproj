@@ -18,4 +18,13 @@
       <ProjectReference Include="..\Services\Linkding.Client\Linkding.Client.csproj" />
       <ProjectReference Include="..\Services\Wallabag.Client\Wallabag.Client.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Update="appsettings.Development.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 </Project>

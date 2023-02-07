@@ -6,3 +6,4 @@ riderModule.iml
 **/.env
 .env
 compose/
+compose-test/
