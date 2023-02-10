@@ -8,6 +8,10 @@ namespace Linkding.Client
     {
         Task<IEnumerable<Bookmark>> GetBookmarksAsync(int limit = 100, int offset = 0);
         Task<IEnumerable<Bookmark>> GetAllBookmarksAsync();
+        Task AddBookmarkCollectionAsync(IEnumerable<Bookmark> bookmarks);
+        Task AddBookmarkCollectionAsync(IEnumerable<BookmarkCreatePayload> bookmarks);
+        Task AddBookmarkAsync(BookmarkCreatePayload bookmark);
+        
         Task UpdateBookmarkCollectionAsync(IEnumerable<Bookmark> bookmarks);
         Task UpdateBookmarkCollectionAsync(IEnumerable<BookmarkUpdatePayload> bookmarks);
         Task UpdateBookmarkAsync(BookmarkUpdatePayload bookmark);

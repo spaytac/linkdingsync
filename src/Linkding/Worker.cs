@@ -53,28 +53,29 @@ public class Worker : BackgroundService
     
     public async Task RunBookmarksTaskHandler()
     {
+        IEnumerable<Bookmark> linkdingBookmarks = null;
         if (!string.IsNullOrEmpty(_linkdingSettings.Url) && _linkdingSettings.UpdateBookmarks)
         {
             _logger.LogInformation($"Starting updating bookmarks for {_linkdingSettings.Url}");
 
-            _logger.LogInformation("Collecting Handler");
-            var handlers = AppDomain.CurrentDomain.GetAssemblies()
+            _logger.LogInformation("Collecting Tag Handler");
+            var tagHandlers = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
                 .Where(p => typeof(ILinkdingTaskHandler).IsAssignableFrom(p) && p.IsClass);
 
             var updatedBookmarksCount = 0;
             var updateBookmarks = new List<Bookmark>();
             var deleteBookmarks = new List<Bookmark>();
-            if (handlers != null && handlers.Count() > 0)
+            if (tagHandlers != null && tagHandlers.Count() > 0)
             {
-                var linkdingBookmarks = await _linkdingService.GetAllBookmarksAsync();
+                linkdingBookmarks = await _linkdingService.GetAllBookmarksAsync();
                 if (linkdingBookmarks.Count() > 0)
                 {
                     var tasksLowerCase = _settings.Tasks.Select(x => x.ToLower());
 
                     _logger.LogInformation($"{linkdingBookmarks.Count()} bookmarks found in {_linkdingSettings.Url}");
 
-                    foreach (var handler in handlers)
+                    foreach (var handler in tagHandlers)
                     {
                         ILinkdingTaskHandler handlerInstance = null;
                         try
@@ -93,7 +94,7 @@ public class Worker : BackgroundService
                             {
                                 try
                                 {
-                                    _logger.LogDebug($"Start executing {handlerInstance.Command}");
+                                    _logger.LogDebug($"Start executing {task}");
                                     // var updateBookmark = updateBookmarks.FirstOrDefault(x => x.Id == linkdingBookmark.Id);
                                     var existingBookmarkIndexInt =
                                         updateBookmarks.FindIndex(x => x.Id == linkdingBookmark.Id);
@@ -136,6 +137,8 @@ public class Worker : BackgroundService
                                                 {
                                                     updateBookmarks.Add(result.Instance);
                                                 }
+
+                                                linkdingBookmark.TagNames = result.Instance.TagNames;
                                             }
                                         }
                                     }
@@ -164,7 +167,7 @@ public class Worker : BackgroundService
                         catch (Exception e)
                         {
                             Console.WriteLine(e);
-                            throw;
+                            // throw;
                         }
                     }
                 }
@@ -182,6 +185,85 @@ public class Worker : BackgroundService
             }
 
             _logger.LogInformation($"Finished updating bookmarks for {_linkdingSettings.Url}");
+            
+            _logger.LogInformation("Collecting Sync Handler");
+            var syncHandlers = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => typeof(ILinkdingSyncTaskHandler).IsAssignableFrom(p) && p.IsClass);
+
+            if (syncHandlers != null && syncHandlers.Count() > 0)
+            {
+                if (linkdingBookmarks == null)
+                {
+                    linkdingBookmarks = await _linkdingService.GetAllBookmarksAsync();
+                }
+
+                if (linkdingBookmarks.Count() > 0)
+                {
+                    var tasksLowerCase = _settings.Tasks.Select(x => x.ToLower());
+
+                    if (_settings.TargetLinkdingKey.Count == _settings.TargetLinkdingUrl.Count)
+                    {
+                        var targetInstances = new Dictionary<string, string>();
+                        for (var i = 0; i < _settings.TargetLinkdingKey.Count(); i++)
+                        {
+                            LinkdingService targetService = null;
+                            try
+                            {
+                                var url = _settings.TargetLinkdingUrl[i];
+                                var key = _settings.TargetLinkdingKey[i];
+                                targetService = LinkdingService.Create(url, key);
+                                
+                                foreach (var syncHandler in syncHandlers)
+                                {
+                                    ILinkdingSyncTaskHandler handlerInstance = null;
+                                    try
+                                    {
+                                        handlerInstance = (ILinkdingSyncTaskHandler) Activator.CreateInstance(syncHandler);
+
+                                        var task = tasksLowerCase.FirstOrDefault(x =>
+                                            x.Equals(handlerInstance.Command, StringComparison.InvariantCultureIgnoreCase));
+
+                                        if (string.IsNullOrEmpty(task))
+                                        {
+                                            continue;
+                                        }
+                            
+                                        _logger.LogDebug($"Start executing {task}");
+                                        await handlerInstance.ProcessAsync(linkdingBookmarks, targetService, _logger, _configuration);
+                                        _logger.LogDebug($"{task} executed successfully!");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine(ex);
+                                        var message = $"... {ex.Message}";
+
+                                        if (handlerInstance != null && !string.IsNullOrEmpty(handlerInstance.Command))
+                                        {
+                                            message = $"Error while executing {handlerInstance.Command}! {message}";
+                                        }
+                                        else
+                                        {
+                                            message = $"Error while executing handler! {message}";
+                                        }
+
+                                        _logger.LogError(message, "Calling Handler", ex);
+                                    }
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                                {throw;}
+                            }
+                            finally
+                            {
+                                targetService = null;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

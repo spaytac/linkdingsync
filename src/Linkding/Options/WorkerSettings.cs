@@ -7,4 +7,6 @@ public class WorkerSettings
     public int Interval { get; set; } = 0;
     public int TagNameLength { get; set; } = 64;
     public List<string> Tasks { get; set; } = new List<string>();
+    public List<string> TargetLinkdingUrl { get; set; } = new List<string>();
+    public List<string> TargetLinkdingKey { get; set; } = new List<string>();
 }

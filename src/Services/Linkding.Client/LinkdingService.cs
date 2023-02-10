@@ -69,13 +69,51 @@ public class LinkdingService : ILinkdingService
 
         return bookmarks;
     }
+
+    public async Task AddBookmarkCollectionAsync(IEnumerable<Bookmark> bookmarks)
+    {
+        foreach (var bookmark in bookmarks)
+        {
+            var payload = _mapper.Map<BookmarkCreatePayload>(bookmark);
+            await AddBookmarkAsync(payload);
+        }
+    }
     
+    public async Task AddBookmarkCollectionAsync(IEnumerable<BookmarkCreatePayload> bookmarks)
+    {
+        foreach (var bookmark in bookmarks)
+        {
+            await AddBookmarkAsync(bookmark);
+        }
+    }
+
+    public async Task AddBookmarkAsync(BookmarkCreatePayload bookmark)
+    {
+        var result = await _client.PostAsJsonAsync($"/api/bookmarks/", bookmark);
+        if (result.IsSuccessStatusCode)
+        {
+                
+        }
+        else
+        {
+                
+        }
+    }
+
     public async Task UpdateBookmarkCollectionAsync(IEnumerable<Bookmark> bookmarks)
     {
         foreach (var bookmark in bookmarks)
         {
-            var payload = _mapper.Map<BookmarkUpdatePayload>(bookmark);
-            await UpdateBookmarkAsync(payload);
+            try
+            {
+                var payload = _mapper.Map<Bookmark, BookmarkUpdatePayload>(bookmark);
+                await UpdateBookmarkAsync(payload);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                // throw;
+            }
         }
     }
 

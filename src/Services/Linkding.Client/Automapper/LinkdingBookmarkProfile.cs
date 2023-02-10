@@ -8,5 +8,6 @@ public class LinkdingBookmarkProfile : Profile
     public LinkdingBookmarkProfile()
     {
         CreateMap<Bookmark, BookmarkUpdatePayload>();
+        CreateMap<Bookmark, BookmarkCreatePayload>();
     }
 }
