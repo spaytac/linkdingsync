@@ -1,5 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 using AutoMapper;
 using Core.Entities.Linkding;
 using Linkding.Client.Options;
@@ -86,9 +88,24 @@ public class LinkdingService : ILinkdingService
             await AddBookmarkAsync(bookmark);
         }
     }
-
+    
     public async Task AddBookmarkAsync(BookmarkCreatePayload bookmark)
     {
+        var content = JsonSerializer.Serialize(bookmark);
+        var requestContent = new StringContent(content, Encoding.UTF8, "application/json");
+        var uri = $"/api/bookmarks/";
+
+        try
+        {
+            var response = await _client.PostAsync(uri, requestContent);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            // throw;
+        }
+        
         var result = await _client.PostAsJsonAsync($"/api/bookmarks/", bookmark);
         if (result.IsSuccessStatusCode)
         {
@@ -107,7 +124,7 @@ public class LinkdingService : ILinkdingService
             try
             {
                 var payload = _mapper.Map<Bookmark, BookmarkUpdatePayload>(bookmark);
-                await UpdateBookmarkAsync(payload);
+                await UpdateBookmarkAsync(bookmark.Id, payload);
             }
             catch (Exception e)
             {
@@ -116,25 +133,22 @@ public class LinkdingService : ILinkdingService
             }
         }
     }
-
-    public async Task UpdateBookmarkCollectionAsync(IEnumerable<BookmarkUpdatePayload> bookmarks)
+    
+    public async Task UpdateBookmarkAsync(int id, BookmarkUpdatePayload bookmark)
     {
-        foreach (var bookmark in bookmarks)
-        {
-            await UpdateBookmarkAsync(bookmark);
-        }
-    }
+        var content = JsonSerializer.Serialize(bookmark);
+        var requestContent = new StringContent(content, Encoding.UTF8, "application/json");
+        var uri = $"/api/bookmarks/{id}/";// Path.Combine("api/bookmarks", $"{id}");
 
-    public async Task UpdateBookmarkAsync(BookmarkUpdatePayload bookmark)
-    {
-        var result = await _client.PutAsJsonAsync($"/api/bookmarks/{bookmark.Id}/", bookmark);
-        if (result.IsSuccessStatusCode)
+        try
         {
-                
+            var response = await _client.PutAsync(uri, requestContent);
+            response.EnsureSuccessStatusCode();
         }
-        else
+        catch (Exception e)
         {
-                
+            Console.WriteLine(e);
+            // throw;
         }
     }
 

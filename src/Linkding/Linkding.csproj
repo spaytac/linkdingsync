@@ -22,4 +22,10 @@
     <ItemGroup>
       <ProjectReference Include="..\Services\Linkding.Client\Linkding.Client.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Update="data\config.yml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>

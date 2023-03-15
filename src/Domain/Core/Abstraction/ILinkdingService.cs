@@ -13,8 +13,7 @@ namespace Linkding.Client
         Task AddBookmarkAsync(BookmarkCreatePayload bookmark);
         
         Task UpdateBookmarkCollectionAsync(IEnumerable<Bookmark> bookmarks);
-        Task UpdateBookmarkCollectionAsync(IEnumerable<BookmarkUpdatePayload> bookmarks);
-        Task UpdateBookmarkAsync(BookmarkUpdatePayload bookmark);
+        Task UpdateBookmarkAsync(int id, BookmarkUpdatePayload bookmark);
         Task<BookmarksResult> GetBookmarkResultsAsync(int limit = 100, int offset = 0);
         Task<BookmarksResult> GetBookmarkResultsAsync(string url);
     }

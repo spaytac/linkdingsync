@@ -14,7 +14,7 @@ public class UpdateTargetLinkdingHandler : ILinkdingSyncTaskHandler
     {
         var linkdingBookmarks = await linkdingService.GetAllBookmarksAsync();
         var addedBookmarks = new List<BookmarkCreatePayload>();
-        var updatedBookmarks = new List<BookmarkUpdatePayload>();
+        var updatedBookmarks = new List<Bookmark>();
 
         if (linkdingBookmarks.Count() > 0)
         {
@@ -37,7 +37,7 @@ public class UpdateTargetLinkdingHandler : ILinkdingSyncTaskHandler
                         !linkdingBookmark.Description.Equals(bookmark.Description.Trim(), StringComparison.OrdinalIgnoreCase) ||
                         linkdingBookmark.TagNames.Count() != bookmark.TagNames.Count()))
                     {
-                        updatedBookmarks.Add(bookmark.MapToUpdatePayload());
+                        updatedBookmarks.Add(bookmark);
                     }
                     else
                     {
@@ -46,7 +46,7 @@ public class UpdateTargetLinkdingHandler : ILinkdingSyncTaskHandler
 
                         if (difference.Count() > 0)
                         {
-                            updatedBookmarks.Add(bookmark.MapToUpdatePayload());
+                            updatedBookmarks.Add(bookmark);
                         }
                     }
                 }
