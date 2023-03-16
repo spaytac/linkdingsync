@@ -1,5 +1,5 @@
 # Linkding Sync
-LinkdingSync is a collection of tools that make life with [Linkding](https://github.com/sissbruecker/linkding) easier. 
+LinkdingSync is a collection of tools that make life with [Linkding](https://github.com/sissbruecker/linkding) easier.
 
 One of the workers is for syncing to [Wallabag](https://wallabag.org/en).
 
@@ -75,12 +75,12 @@ The configuration is optional. In the configuration (**YAML File**) rules can be
 Exampel:
 ```yaml
 excludedDomains:
-- name: youtube
-  pattern: 'https://[[a-zA-Z0-9]+\.]?(youtube)\.com(?:/.*)?'
-- name: ebay
-  pattern: 'https://[[a-zA-Z0-9]+\.]?(ebay)\.(com|de|fr)(?:/.*)?'
-- name: amazon
-  pattern: 'https://[[a-zA-Z0-9]+\.]?(amazon)\.(com|de|fr)(?:/.*)?'
+  - name: youtube
+    pattern: 'https://[[a-zA-Z0-9]+\.]?(youtube)\.com(?:/.*)?'
+  - name: ebay
+    pattern: 'https://[[a-zA-Z0-9]+\.]?(ebay)\.(com|de|fr)(?:/.*)?'
+  - name: amazon
+    pattern: 'https://[[a-zA-Z0-9]+\.]?(amazon)\.(com|de|fr)(?:/.*)?'
 ```
 With this configuration every matching bookmark from linkding will be excluded from the sync.
 
@@ -98,7 +98,7 @@ urlTagMapping:
     url: https://github.com/AzureAD
   - name: microsoft_dotnet
     url: https://github.com/dotnet-architecture
-    
+
 taggingRule:
   - name: reddit
     pattern: https://(?:www\.)?(reddit)\.com(?:/r/)?([a-zA-Z0-9\-\+_]+)?(?:/.*)?
@@ -144,20 +144,24 @@ Dynamic tags can be assigned to the bookmarks on the basis of the URL using regu
 Example:
 Here is an example using a reddit bookmark.
 Url:
-- ht<span>tps://ww</span>w.reddit.com/r/selfhosted/comments/yzq6qp/running_a_mostly_sbcbased_nomad_cluster_in_my/?utm_source=share&utm_medium=android_app&utm_name=androidcss&utm_term=2&utm_content=share_button
-
+```
+https://www.reddit.com/r/selfhosted/comments/yzq6qp/running_a_mostly_sbcbased_nomad_cluster_in_my/?utm_source=share&utm_medium=android_app&utm_name=androidcss&utm_term=2&utm_content=share_button
+```
 Pattern:
-- https://(?:www\.)?(reddit)\.com(?:/r/)?([a-zA-Z0-9\-\+_]+)?(?:/.*)?
-
+```regex
+https://(?:www\.)?(reddit)\.com(?:/r/)?([a-zA-Z0-9\-\+_]+)?(?:/.*)?
+```
 Matches:
-- ht<span>tps://ww</span>w.<span style="color:red">reddit</span>.com/r/<span style="color:red">selfhosted</span>/comments/yzq6qp/running_a_mostly_sbcbased_nomad_cluster_in_my/?utm_source=share&utm_medium=android_app&utm_name=androidcss&utm_term=2&utm_content=share_button
+- https://www.$${\color{red}reddit}$$.com/r/$${\color{red}selfhosted}$$/comments/yzq6qp/running_a_mostly_sbcbased_nomad_cluster_in_my/?utm_source=share&utm_medium=android_app&utm_name=androidcss&utm_term=2&utm_content=share_button
 
 if you would change the pattern to the following.
 Pattern:
-- https://(?:www\.)?(reddit)\.com(?:/)?(r/[a-zA-Z0-9\-\+_]+)?(?:/.*)?
+```regex
+https://(?:www\.)?(reddit)\.com(?:/)?(r/[a-zA-Z0-9\-\+_]+)?(?:/.*)?
+```
 
 then the following would match.
-- ht<span>tps://ww</span>w.<span style="color:red">reddit</span>.com/<span style="color:red">r/selfhosted</span>/comments/yzq6qp/running_a_mostly_sbcbased_nomad_cluster_in_my/?utm_source=share&utm_medium=android_app&utm_name=androidcss&utm_term=2&utm_content=share_button
+- https://www.$${\color{red}reddit}$$.com/$${\color{red}r/selfhosted}$$/comments/yzq6qp/running_a_mostly_sbcbased_nomad_cluster_in_my/?utm_source=share&utm_medium=android_app&utm_name=androidcss&utm_term=2&utm_content=share_button
 
 ## Docker Run
 ```bash
