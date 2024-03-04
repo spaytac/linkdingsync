@@ -4,7 +4,7 @@ LinkdingSync is a collection of tools that make life with [Linkding](https://git
 One of the workers is for syncing to [Wallabag](https://wallabag.org/en).
 
 ## Getting Started
-It is recommended to use the Docker images. Otherwise, a .NET 6 environment is required to customize and build the code.
+It is recommended to use the Docker images. Otherwise, a .NET 8 environment is required to customize and build the code.
 
 ## Environment Variables
 For the containers to work, the environment variables must be passed. This can be done either directly via the Docker run **-e** switch, via the **environment** settings in a Docker compose definition, or via an environment variable file.

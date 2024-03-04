@@ -17,8 +17,10 @@ public static class ServiceRegistrationExtensions
     {
         var configSection = configuration.GetSection(WallabagSettings.Position);
         services.Configure<WallabagSettings>(configSection);
-        services.AddScoped<IAccessTokenProvider, OAuthTokenProvider>();
-        services.AddScoped<AuthenticationClient>();
+        // services.AddScoped<IAccessTokenProvider, OAuthTokenProvider>();
+        // services.AddScoped<AuthenticationClient>();
+        services.AddSingleton<IAccessTokenProvider, OAuthTokenProvider>();
+        services.AddSingleton<AuthenticationClient>();
         services.AddHttpClient<WallabagService>()
             .SetHandlerLifetime(TimeSpan.FromMinutes(5)) //Set lifetime to five minutes
             .AddPolicyHandler(GetRetryPolicy());
