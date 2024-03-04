@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Reflection;
 using Linkding.Client;
 using Linkding.Client.Options;
 using Microsoft.Extensions.Configuration;
@@ -18,8 +18,9 @@ public static class ServiceRegistrationExtensions
         services.AddHttpClient<LinkdingService>()
             .SetHandlerLifetime(TimeSpan.FromMinutes(5)) //Set lifetime to five minutes
             .AddPolicyHandler(GetRetryPolicy());
-        
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        services.AddAutoMapper(assemblies);
 
         return services;
     }

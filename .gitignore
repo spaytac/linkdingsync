@@ -7,3 +7,5 @@ riderModule.iml
 .env
 compose/
 compose-test/
+.vscode/
+.idea/
