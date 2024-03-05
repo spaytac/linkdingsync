@@ -21,6 +21,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallabag", "src\Wallabag\Wa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linkding", "src\Linkding\Linkding.csproj", "{3E78F171-D237-46DF-8A27-DAADE7CA1940}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Items", "Items", "{328C408E-A1CD-4CDC-B13D-A4EC2F8C8494}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitignore = .gitignore
+		Dockerfile_Linkding = Dockerfile_Linkding
+		Dockerfile_Wallabag = Dockerfile_Wallabag
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
